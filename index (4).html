@@ -1,0 +1,3967 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Character CAPTCHA | H.E.A.R.T. Reflection System</title>
+
+    <style>
+        :root {
+            --navy: #14213d;
+            --navy-2: #1d3557;
+            --blue: #3366cc;
+            --blue-soft: #eef4ff;
+            --teal: #159a9c;
+            --teal-soft: #eafafa;
+            --gold: #d99c2b;
+            --gold-soft: #fff8e8;
+            --red: #cf4b4b;
+            --red-soft: #fff0f0;
+            --green: #2d8a62;
+            --green-soft: #edf9f3;
+            --purple: #6953b8;
+            --purple-soft: #f3f0ff;
+
+            --text: #182233;
+            --muted: #697386;
+            --line: #dfe5ec;
+            --bg: #f5f7fb;
+            --white: #ffffff;
+
+            --shadow:
+                0 18px 50px rgba(20, 33, 61, .08);
+
+            --radius: 22px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(51, 102, 204, .08),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+        }
+
+        button,
+        textarea,
+        input {
+            font-family: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 14px 32px;
+
+            background:
+                rgba(255, 255, 255, .94);
+
+            backdrop-filter: blur(14px);
+
+            border-bottom:
+                1px solid rgba(223, 229, 236, .85);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--navy),
+                    var(--blue)
+                );
+
+            color: white;
+            font-weight: 900;
+            font-size: 18px;
+
+            box-shadow:
+                0 9px 25px rgba(51, 102, 204, .22);
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -.2px;
+        }
+
+        .brand-subtitle {
+            margin-top: 2px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mini-badge {
+            padding: 7px 12px;
+
+            border:
+                1px solid var(--line);
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--navy);
+
+            background: white;
+        }
+
+        /* =========================
+           GLOBAL BUTTON
+        ========================== */
+
+        .btn {
+            border: 0;
+
+            padding: 13px 20px;
+
+            border-radius: 13px;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            transition:
+                transform .18s ease,
+                box-shadow .18s ease,
+                opacity .18s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--blue),
+                    #2756b4
+                );
+
+            color: white;
+
+            box-shadow:
+                0 10px 24px rgba(51, 102, 204, .24);
+        }
+
+        .btn-dark {
+            background: var(--navy);
+            color: white;
+
+            box-shadow:
+                0 10px 24px rgba(20, 33, 61, .18);
+        }
+
+        .btn-teal {
+            background: var(--teal);
+            color: white;
+
+            box-shadow:
+                0 10px 24px rgba(21, 154, 156, .2);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--navy);
+
+            border:
+                1px solid var(--line);
+        }
+
+        .btn-danger-soft {
+            color: var(--red);
+            background: var(--red-soft);
+        }
+
+        .btn:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* =========================
+           MAIN WRAPPER
+        ========================== */
+
+        .container {
+            width: min(1180px, calc(100% - 36px));
+            margin: auto;
+        }
+
+        .app-section {
+            min-height:
+                calc(100vh - 72px);
+
+            padding:
+                50px 0 70px;
+        }
+
+        /* =========================
+           HERO
+        ========================== */
+
+        .hero {
+            display: grid;
+
+            grid-template-columns:
+                1.08fr .92fr;
+
+            align-items: center;
+
+            gap: 55px;
+
+            min-height:
+                calc(100vh - 110px);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 13px;
+
+            border-radius: 999px;
+
+            background: var(--blue-soft);
+
+            color: var(--blue);
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin:
+                18px 0 18px;
+
+            max-width: 720px;
+
+            font-size:
+                clamp(42px, 5.5vw, 72px);
+
+            line-height: .98;
+            letter-spacing: -3px;
+
+            color: var(--navy);
+        }
+
+        .hero h1 span {
+            color: var(--teal);
+        }
+
+        .hero-lead {
+            max-width: 690px;
+
+            font-size: 18px;
+            line-height: 1.8;
+
+            color: #4f5d70;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            margin-top: 28px;
+        }
+
+        .hero-note {
+            margin-top: 22px;
+
+            max-width: 650px;
+
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            font-size: 12px;
+            line-height: 1.6;
+
+            color: var(--muted);
+        }
+
+        .hero-note .dot {
+            width: 8px;
+            height: 8px;
+
+            flex: 0 0 auto;
+
+            margin-top: 5px;
+
+            border-radius: 50%;
+
+            background: var(--teal);
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .visual-card {
+            padding: 26px;
+
+            border-radius: 30px;
+
+            background: white;
+
+            border:
+                1px solid rgba(223, 229, 236, .95);
+
+            box-shadow: var(--shadow);
+        }
+
+        .visual-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 24px;
+        }
+
+        .visual-label strong {
+            font-size: 14px;
+        }
+
+        .visual-label span {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .flow-node {
+            position: relative;
+
+            padding: 17px 18px;
+            margin-bottom: 13px;
+
+            border-radius: 16px;
+            border: 1px solid var(--line);
+
+            background: #fff;
+        }
+
+        .flow-node:last-child {
+            margin-bottom: 0;
+        }
+
+        .flow-node::after {
+            content: "";
+
+            position: absolute;
+            bottom: -14px;
+            left: 31px;
+
+            width: 2px;
+            height: 14px;
+
+            background: var(--line);
+        }
+
+        .flow-node:last-child::after {
+            display: none;
+        }
+
+        .flow-kicker {
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .flow-title {
+            margin-top: 5px;
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .flow-node.blue {
+            background: var(--blue-soft);
+            border-color: #c9d9ff;
+        }
+
+        .flow-node.teal {
+            background: var(--teal-soft);
+            border-color: #c3e8e8;
+        }
+
+        .flow-node.gold {
+            background: var(--gold-soft);
+            border-color: #f2dda9;
+        }
+
+        .flow-node.navy {
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--navy),
+                    var(--navy-2)
+                );
+
+            border-color: transparent;
+        }
+
+        /* =========================
+           PAGE HEADER
+        ========================== */
+
+        .page-head {
+            max-width: 760px;
+
+            margin-bottom: 32px;
+        }
+
+        .page-head h2 {
+            margin:
+                12px 0 10px;
+
+            color: var(--navy);
+
+            font-size:
+                clamp(28px, 4vw, 44px);
+
+            letter-spacing: -1.4px;
+        }
+
+        .page-head p {
+            color: var(--muted);
+
+            line-height: 1.75;
+        }
+
+        /* =========================
+           SCENARIO
+        ========================== */
+
+        .scenario-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+        .scenario-card {
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+
+            min-height: 285px;
+
+            padding: 24px;
+
+            border-radius: var(--radius);
+
+            border:
+                1px solid var(--line);
+
+            background: white;
+
+            box-shadow:
+                0 10px 35px rgba(20, 33, 61, .045);
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                border-color .2s ease;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-4px);
+
+            border-color: #b8c8eb;
+
+            box-shadow:
+                0 18px 40px rgba(20, 33, 61, .08);
+        }
+
+        .scenario-code {
+            width: fit-content;
+
+            padding: 6px 10px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            color: var(--blue);
+            background: var(--blue-soft);
+        }
+
+        .scenario-card h3 {
+            margin:
+                18px 0 10px;
+
+            font-size: 20px;
+            color: var(--navy);
+        }
+
+        .scenario-card p {
+            flex: 1;
+
+            margin: 0;
+
+            font-size: 13px;
+            line-height: 1.7;
+
+            color: #5e6a7b;
+        }
+
+        .conflict {
+            margin-top: 18px;
+
+            padding-top: 15px;
+
+            border-top:
+                1px solid var(--line);
+
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .conflict strong {
+            color: var(--text);
+        }
+
+        .scenario-card .btn {
+            margin-top: 18px;
+            width: 100%;
+        }
+
+        /* =========================
+           APP WORKSPACE
+        ========================== */
+
+        .workspace {
+            display: grid;
+
+            grid-template-columns:
+                290px minmax(0, 1fr);
+
+            gap: 24px;
+
+            align-items: start;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 96px;
+
+            padding: 22px;
+
+            border-radius: 20px;
+
+            border:
+                1px solid var(--line);
+
+            background: white;
+
+            box-shadow:
+                0 12px 34px rgba(20, 33, 61, .04);
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .sidebar-case {
+            margin:
+                10px 0 23px;
+
+            color: var(--navy);
+
+            font-size: 17px;
+            font-weight: 900;
+            line-height: 1.4;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 10px 11px;
+
+            border-radius: 12px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            color: var(--muted);
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+
+            display: grid;
+            place-items: center;
+
+            flex: 0 0 auto;
+
+            border-radius: 9px;
+
+            background: #f1f3f7;
+
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .step-item.active {
+            color: var(--blue);
+            background: var(--blue-soft);
+        }
+
+        .step-item.active .step-num {
+            color: white;
+            background: var(--blue);
+        }
+
+        .step-item.done {
+            color: var(--green);
+        }
+
+        .step-item.done .step-num {
+            color: white;
+            background: var(--green);
+        }
+
+        .main-card {
+            min-height: 630px;
+
+            padding: 32px;
+
+            border-radius: 24px;
+
+            border:
+                1px solid var(--line);
+
+            background: white;
+
+            box-shadow: var(--shadow);
+        }
+
+        .step-kicker {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            color: var(--blue);
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .step-kicker-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .main-card h2 {
+            margin:
+                10px 0 8px;
+
+            color: var(--navy);
+
+            font-size: 30px;
+            letter-spacing: -.7px;
+        }
+
+        .main-card .lead {
+            max-width: 760px;
+
+            color: var(--muted);
+
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        /* =========================
+           CASE BOX
+        ========================== */
+
+        .case-box {
+            margin:
+                28px 0;
+
+            padding: 22px;
+
+            border-radius: 17px;
+
+            background: #f7f9fc;
+
+            border:
+                1px solid var(--line);
+        }
+
+        .case-label {
+            margin-bottom: 8px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .case-text {
+            color: var(--navy);
+
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           TEXTAREA
+        ========================== */
+
+        .field {
+            margin-top: 23px;
+        }
+
+        .field label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 13px;
+            font-weight: 800;
+
+            color: var(--text);
+        }
+
+        .helper {
+            margin-bottom: 10px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            line-height: 1.55;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+
+            resize: vertical;
+
+            padding: 16px;
+
+            border-radius: 14px;
+
+            border:
+                1px solid #cfd7e2;
+
+            background: white;
+
+            color: var(--text);
+
+            font-size: 14px;
+            line-height: 1.65;
+
+            outline: none;
+
+            transition:
+                border-color .18s ease,
+                box-shadow .18s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--blue);
+
+            box-shadow:
+                0 0 0 4px rgba(51, 102, 204, .09);
+        }
+
+        .counter {
+            margin-top: 7px;
+
+            text-align: right;
+
+            font-size: 10px;
+
+            color: var(--muted);
+        }
+
+        /* =========================
+           AI PERSPECTIVE
+        ========================== */
+
+        .ai-box {
+            margin-top: 27px;
+
+            padding: 24px;
+
+            border-radius: 18px;
+
+            border:
+                1px solid #c8dcff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f6f9ff,
+                    #eef4ff
+                );
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 15px;
+        }
+
+        .ai-icon {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 13px;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--blue),
+                    var(--purple)
+                );
+
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .ai-title {
+            color: var(--navy);
+
+            font-weight: 900;
+        }
+
+        .ai-caption {
+            margin-top: 2px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+        }
+
+        .ai-text {
+            color: #3d4d62;
+
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .notice {
+            display: flex;
+            gap: 10px;
+
+            margin-top: 18px;
+
+            padding: 14px 15px;
+
+            border-radius: 13px;
+
+            color: #72551a;
+            background: var(--gold-soft);
+
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           HEART
+        ========================== */
+
+        .heart-intro {
+            margin:
+                25px 0;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, minmax(0, 1fr));
+
+            gap: 10px;
+        }
+
+        .heart-chip {
+            padding: 13px 8px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            border:
+                1px solid var(--line);
+
+            font-size: 11px;
+            font-weight: 900;
+
+            background: #f9fafc;
+            color: var(--muted);
+        }
+
+        .heart-chip.active {
+            color: white;
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+        .heart-chip.done {
+            color: var(--green);
+            background: var(--green-soft);
+            border-color: #bae2cc;
+        }
+
+        .heart-panel {
+            margin-top: 20px;
+
+            padding: 24px;
+
+            border-radius: 18px;
+
+            background: #fbfcfe;
+
+            border:
+                1px solid var(--line);
+        }
+
+        .heart-letter {
+            width: 46px;
+            height: 46px;
+
+            display: grid;
+            place-items: center;
+
+            margin-bottom: 16px;
+
+            border-radius: 14px;
+
+            color: white;
+
+            background: var(--teal);
+
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .heart-panel h3 {
+            margin: 0 0 7px;
+
+            color: var(--navy);
+
+            font-size: 21px;
+        }
+
+        .heart-question {
+            margin-top: 18px;
+
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.55;
+
+            color: var(--text);
+        }
+
+        /* =========================
+           FOOTER ACTION
+        ========================== */
+
+        .actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 30px;
+
+            padding-top: 22px;
+
+            border-top:
+                1px solid var(--line);
+        }
+
+        .right-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* =========================
+           TRACE
+        ========================== */
+
+        .result-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+
+            margin-bottom: 28px;
+        }
+
+        .success-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 12px;
+
+            border-radius: 999px;
+
+            color: var(--green);
+
+            background: var(--green-soft);
+
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .ijk-box {
+            min-width: 185px;
+
+            padding: 18px;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--navy),
+                    #254e83
+                );
+
+            box-shadow:
+                0 12px 30px rgba(20, 33, 61, .18);
+        }
+
+        .ijk-small {
+            font-size: 10px;
+
+            opacity: .76;
+
+            letter-spacing: .7px;
+
+            text-transform: uppercase;
+        }
+
+        .ijk-number {
+            margin:
+                5px 0 3px;
+
+            font-size: 42px;
+            font-weight: 900;
+        }
+
+        .ijk-category {
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .trace {
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .trace-item {
+            position: relative;
+
+            padding: 19px 20px;
+
+            border-radius: 16px;
+
+            border:
+                1px solid var(--line);
+
+            background: white;
+        }
+
+        .trace-label {
+            margin-bottom: 6px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: .7px;
+            text-transform: uppercase;
+        }
+
+        .trace-value {
+            color: var(--text);
+
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .trace-item.final {
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--navy),
+                    var(--navy-2)
+                );
+
+            border-color: transparent;
+        }
+
+        .trace-item.final .trace-label,
+        .trace-item.final .trace-value {
+            color: white;
+        }
+
+        /* =========================
+           HEART SCORE
+        ========================== */
+
+        .score-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, minmax(0, 1fr));
+
+            gap: 10px;
+
+            margin:
+                24px 0;
+        }
+
+        .score-card {
+            padding: 15px 10px;
+
+            text-align: center;
+
+            border-radius: 14px;
+
+            background: #f7f9fc;
+
+            border:
+                1px solid var(--line);
+        }
+
+        .score-letter {
+            font-size: 11px;
+            font-weight: 900;
+
+            color: var(--muted);
+        }
+
+        .score-value {
+            margin-top: 4px;
+
+            font-size: 23px;
+            font-weight: 900;
+
+            color: var(--navy);
+        }
+
+        .score-max {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .disclaimer {
+            margin-top: 22px;
+
+            padding: 15px;
+
+            border-radius: 13px;
+
+            background: #f7f8fa;
+
+            border:
+                1px solid var(--line);
+
+            color: var(--muted);
+
+            font-size: 10.5px;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           MODAL
+        ========================== */
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+
+            z-index: 100;
+
+            display: grid;
+            place-items: center;
+
+            padding: 20px;
+
+            background:
+                rgba(12, 24, 45, .56);
+
+            backdrop-filter: blur(5px);
+        }
+
+        .modal {
+            width: min(600px, 100%);
+
+            padding: 28px;
+
+            border-radius: 22px;
+
+            background: white;
+
+            box-shadow:
+                0 30px 80px rgba(0,0,0,.22);
+        }
+
+        .modal h3 {
+            margin:
+                0 0 10px;
+
+            color: var(--navy);
+
+            font-size: 23px;
+        }
+
+        .modal p {
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+
+            margin-top: 22px;
+        }
+
+        /* =========================
+           TOAST
+        ========================== */
+
+        .toast {
+            position: fixed;
+
+            right: 22px;
+            bottom: 22px;
+
+            z-index: 200;
+
+            max-width: 370px;
+
+            padding: 14px 18px;
+
+            border-radius: 14px;
+
+            color: white;
+
+            background: var(--navy);
+
+            box-shadow:
+                0 18px 40px rgba(20, 33, 61, .25);
+
+            font-size: 12px;
+            line-height: 1.5;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transform:
+                translateY(15px);
+
+            transition:
+                opacity .25s ease,
+                transform .25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 970px) {
+
+            .hero {
+                grid-template-columns: 1fr;
+
+                padding:
+                    40px 0;
+            }
+
+            .hero-visual {
+                max-width: 680px;
+            }
+
+            .scenario-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .step-list {
+                display: grid;
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .topbar {
+                padding:
+                    11px 16px;
+            }
+
+            .brand-subtitle,
+            .mini-badge {
+                display: none;
+            }
+
+            .container {
+                width:
+                    min(100% - 22px, 1180px);
+            }
+
+            .app-section {
+                padding:
+                    32px 0 55px;
+            }
+
+            .hero {
+                min-height: auto;
+
+                gap: 30px;
+            }
+
+            .hero h1 {
+                font-size: 44px;
+                letter-spacing: -2px;
+            }
+
+            .hero-lead {
+                font-size: 15px;
+            }
+
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-card {
+                padding: 21px;
+
+                min-height: auto;
+            }
+
+            .step-list {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .heart-intro,
+            .score-grid {
+                grid-template-columns:
+                    repeat(5, 1fr);
+            }
+
+            .heart-chip {
+                padding:
+                    10px 3px;
+
+                font-size: 10px;
+            }
+
+            .result-header {
+                flex-direction: column;
+            }
+
+            .ijk-box {
+                width: 100%;
+            }
+
+            .actions-row {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .right-actions {
+                flex-direction: column;
+            }
+
+            .actions-row .btn,
+            .right-actions .btn {
+                width: 100%;
+            }
+        }
+
+        /* =========================
+           PRINT RESULT
+        ========================== */
+
+        @media print {
+
+            body {
+                background: white;
+            }
+
+            .topbar,
+            .sidebar,
+            .actions-row,
+            .print-hide {
+                display: none !important;
+            }
+
+            .container {
+                width: 100%;
+            }
+
+            .app-section {
+                padding: 0;
+            }
+
+            .workspace {
+                display: block;
+            }
+
+            .main-card {
+                box-shadow: none;
+                border: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-mark">
+            CC
+        </div>
+
+        <div>
+            <div class="brand-title">
+                Character CAPTCHA
+            </div>
+
+            <div class="brand-subtitle">
+                H.E.A.R.T. Reflection System
+            </div>
+        </div>
+
+    </div>
+
+    <div class="top-actions">
+
+        <div class="mini-badge">
+            Prototype MVP · 2026
+        </div>
+
+        <button
+            class="btn btn-outline"
+            id="restartTopBtn"
+            onclick="openRestartModal()"
+            style="display:none"
+        >
+            Mulai Ulang
+        </button>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <!-- ========================================
+         LANDING
+    ========================================= -->
+
+    <section
+        id="landingScreen"
+        class="app-section"
+    >
+
+        <div class="container">
+
+            <div class="hero">
+
+                <div>
+
+                    <div class="eyebrow">
+                        Human Agency in the AI Era
+                    </div>
+
+                    <h1>
+                        AI membantu.
+                        <span>Manusia memutuskan.</span>
+                    </h1>
+
+                    <p class="hero-lead">
+                        Character CAPTCHA adalah model refleksi digital
+                        yang membuat proses berpikir pelajar tetap terlihat
+                        ketika kecerdasan artifisial digunakan sebagai
+                        sumber perspektif.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <button
+                            class="btn btn-primary"
+                            onclick="showScenarioScreen()"
+                        >
+                            Mulai Simulasi
+                        </button>
+
+                        <button
+                            class="btn btn-outline"
+                            onclick="scrollToFlow()"
+                        >
+                            Lihat Cara Kerja
+                        </button>
+
+                    </div>
+
+                    <div class="hero-note">
+
+                        <div class="dot"></div>
+
+                        <div>
+                            Sistem ini tidak memberi label karakter
+                            “baik” atau “buruk”. Yang ditelusuri adalah
+                            proses berpikir, refleksi, perubahan keputusan,
+                            dan keterlibatan manusia.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="hero-visual"
+                    id="flowPreview"
+                >
+
+                    <div class="visual-card">
+
+                        <div class="visual-label">
+
+                            <strong>
+                                Decision Architecture
+                            </strong>
+
+                            <span>
+                                Human First → Human Final
+                            </span>
+
+                        </div>
+
+
+                        <div class="flow-node blue">
+
+                            <div class="flow-kicker">
+                                01 · Human First
+                            </div>
+
+                            <div class="flow-title">
+                                Tuliskan posisi awal sebelum melihat AI
+                            </div>
+
+                        </div>
+
+
+                        <div class="flow-node gold">
+
+                            <div class="flow-kicker">
+                                02 · AI Second
+                            </div>
+
+                            <div class="flow-title">
+                                AI memberikan alternatif perspektif
+                            </div>
+
+                        </div>
+
+
+                        <div class="flow-node teal">
+
+                            <div class="flow-kicker">
+                                03 · H.E.A.R.T. Gate
+                            </div>
+
+                            <div class="flow-title">
+                                Refleksi sebelum keputusan final
+                            </div>
+
+                        </div>
+
+
+                        <div class="flow-node navy">
+
+                            <div class="flow-kicker">
+                                04 · Human Final
+                            </div>
+
+                            <div class="flow-title">
+                                Keputusan akhir + Decision Trace
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================
+         SCENARIO SELECTION
+    ========================================= -->
+
+    <section
+        id="scenarioScreen"
+        class="app-section hidden"
+    >
+
+        <div class="container">
+
+            <div class="page-head">
+
+                <div class="eyebrow">
+                    Case Library
+                </div>
+
+                <h2>
+                    Pilih kasus untuk direfleksikan
+                </h2>
+
+                <p>
+                    Tidak semua keputusan memiliki satu jawaban yang
+                    sempurna. Pilih satu kasus, nyatakan posisi awalmu,
+                    lihat perspektif AI, lalu uji keputusanmu melalui
+                    H.E.A.R.T.
+                </p>
+
+            </div>
+
+            <div
+                class="scenario-grid"
+                id="scenarioGrid"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================
+         REFLECTION APP
+    ========================================= -->
+
+    <section
+        id="workspaceScreen"
+        class="app-section hidden"
+    >
+
+        <div class="container">
+
+            <div class="workspace">
+
+                <aside class="sidebar">
+
+                    <div class="sidebar-title">
+                        KASUS AKTIF
+                    </div>
+
+                    <div
+                        class="sidebar-case"
+                        id="sidebarCase"
+                    ></div>
+
+                    <div
+                        class="step-list"
+                        id="stepList"
+                    ></div>
+
+                </aside>
+
+
+                <section
+                    class="main-card"
+                    id="mainCard"
+                >
+                </section>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- ==========================================
+     RESTART MODAL
+=========================================== -->
+
+<div
+    id="restartModal"
+    class="modal-backdrop hidden"
+>
+
+    <div class="modal">
+
+        <h3>
+            Mulai refleksi dari awal?
+        </h3>
+
+        <p>
+            Semua jawaban pada simulasi yang sedang berjalan akan
+            dihapus. Kamu dapat memilih kasus yang sama atau kasus lain.
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                class="btn btn-outline"
+                onclick="closeRestartModal()"
+            >
+                Batal
+            </button>
+
+            <button
+                class="btn btn-danger-soft"
+                onclick="restartApp()"
+            >
+                Ya, Mulai Ulang
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    id="toast"
+    class="toast"
+></div>
+
+
+
+<script>
+
+    /* =========================================================
+       CHARACTER CAPTCHA
+       MVP Prototype
+       ========================================================= */
+
+
+    const scenarios = [
+
+        {
+            id: "CC-01",
+
+            theme: "Kerja Kelompok",
+
+            title:
+                "Anggota kelompok tidak dapat menyelesaikan tugas",
+
+            conflict:
+                "Keadilan vs Empati",
+
+            case:
+                "Salah satu anggota kelompok tidak menyelesaikan bagian tugasnya karena harus menjaga orang tua yang sedang sakit. Kelompok harus menentukan apakah namanya tetap dicantumkan dan bagaimana kontribusinya dinilai.",
+
+            ai:
+                "Pertimbangkan solusi yang tetap mengakui kondisi keluarga anggota tersebut tanpa mengabaikan beban anggota lain. Salah satu alternatif adalah memberikan kesempatan kontribusi pengganti dengan waktu yang disesuaikan, sementara penilaian tetap didasarkan pada kontribusi aktual."
+        },
+
+        {
+            id: "CC-02",
+
+            theme: "Integritas Akademik",
+
+            title:
+                "AI menghasilkan jawaban tugas yang sudah lengkap",
+
+            conflict:
+                "Efisiensi vs Proses Berpikir",
+
+            case:
+                "Seorang pelajar menggunakan AI untuk membantu tugas. AI menghasilkan jawaban lengkap yang tampak sangat baik dan siap dikumpulkan. Pelajar harus menentukan bagaimana jawaban tersebut seharusnya digunakan.",
+
+            ai:
+                "Jawaban AI dapat digunakan sebagai referensi awal, tetapi sebaiknya tidak langsung dikumpulkan. Pelajar dapat memeriksa kebenaran informasi, menulis ulang berdasarkan pemahamannya sendiri, mencantumkan penggunaan AI jika diperlukan, dan memastikan bahwa keputusan akhir tetap berasal dari proses berpikirnya."
+        },
+
+        {
+            id: "CC-03",
+
+            theme: "Privasi Digital",
+
+            title:
+                "Foto teman tersebar tanpa izin",
+
+            conflict:
+                "Konten vs Privasi",
+
+            case:
+                "Sebuah foto lucu seorang teman tersebar di grup kelas tanpa izin. Sebagian anggota menganggapnya hanya bercanda, tetapi orang yang ada di dalam foto terlihat tidak nyaman.",
+
+            ai:
+                "Pertimbangkan persetujuan orang yang terdapat dalam foto, potensi dampak penyebaran lebih luas, serta tanggung jawab anggota grup. Salah satu pilihan adalah menghentikan penyebaran, meminta penghapusan foto, dan meminta izin sebelum menggunakan atau membagikan kembali konten pribadi."
+        },
+
+        {
+            id: "CC-04",
+
+            theme: "Informasi Viral",
+
+            title:
+                "Berita belum terverifikasi menyebar cepat",
+
+            conflict:
+                "Kecepatan vs Akurasi",
+
+            case:
+                "Sebuah informasi penting mengenai sekolah beredar melalui media sosial. Informasi tersebut belum berasal dari akun resmi, tetapi sudah banyak dibagikan oleh siswa.",
+
+            ai:
+                "Sebelum membagikan informasi lebih lanjut, periksa sumber primer atau kanal resmi sekolah. Kecepatan penyebaran informasi tidak selalu menunjukkan kebenarannya. Jika belum dapat diverifikasi, lebih aman menunda penyebaran dan menjelaskan bahwa informasi tersebut masih belum terkonfirmasi."
+        },
+
+        {
+            id: "CC-05",
+
+            theme: "Perundungan Daring",
+
+            title:
+                "Candaan grup mulai menyinggung teman",
+
+            conflict:
+                "Solidaritas vs Perlindungan",
+
+            case:
+                "Dalam grup pertemanan, beberapa anggota membuat candaan berulang mengenai salah satu teman. Sebagian menganggapnya biasa, tetapi teman tersebut mulai jarang merespons dan terlihat tidak nyaman.",
+
+            ai:
+                "Pertimbangkan perbedaan antara niat bercanda dan dampak yang diterima orang lain. Kamu dapat menghentikan candaan, memeriksa kondisi teman tersebut secara pribadi, dan mengajak anggota grup mengubah perilaku tanpa mempermalukan pihak tertentu."
+        },
+
+        {
+            id: "CC-06",
+
+            theme: "Lingkungan",
+
+            title:
+                "Kegiatan sekolah menghasilkan banyak sampah sekali pakai",
+
+            conflict:
+                "Praktis vs Dampak",
+
+            case:
+                "Sebuah kegiatan sekolah membutuhkan penyediaan makanan dan minuman untuk banyak peserta. Menggunakan kemasan sekali pakai dianggap lebih mudah, tetapi akan menghasilkan sampah dalam jumlah besar.",
+
+            ai:
+                "Pertimbangkan keseimbangan antara kemudahan operasional dan dampak lingkungan. Alternatif dapat berupa penggunaan wadah yang dapat dipakai ulang, sistem pengumpulan dan pemilahan, atau pengurangan jenis kemasan tertentu tanpa menghambat pelaksanaan kegiatan."
+        }
+
+    ];
+
+
+    const heartData = [
+
+        {
+            key: "H",
+            name: "Honesty",
+
+            question:
+                "Bagian mana dari pemikiran atau keputusanmu yang dipengaruhi oleh bantuan AI?",
+
+            helper:
+                "Jelaskan secara transparan apa yang kamu ambil, pertimbangkan, ubah, atau tolak dari perspektif AI."
+        },
+
+        {
+            key: "E",
+            name: "Empathy",
+
+            question:
+                "Siapa saja yang terdampak oleh keputusan ini dan bagaimana perspektif mereka?",
+
+            helper:
+                "Pertimbangkan lebih dari satu pihak serta kemungkinan kepentingan yang berbeda."
+        },
+
+        {
+            key: "A",
+            name: "Argumentation",
+
+            question:
+                "Mengapa kamu menerima, menolak, atau memodifikasi saran AI?",
+
+            helper:
+                "Gunakan alasan yang relevan dengan kasus. Bandingkan alternatif jika memungkinkan."
+        },
+
+        {
+            key: "R",
+            name: "Responsibility",
+
+            question:
+                "Apa konsekuensi dari keputusan yang akan kamu ambil?",
+
+            helper:
+                "Pertimbangkan dampak langsung serta kemungkinan konsekuensi jangka pendek dan jangka panjang."
+        },
+
+        {
+            key: "T",
+            name: "Thought Reflection",
+
+            question:
+                "Apakah pemikiranmu berubah setelah melihat perspektif AI? Jelaskan mengapa.",
+
+            helper:
+                "Bandingkan posisi awal dengan posisi setelah memperoleh perspektif tambahan."
+        }
+
+    ];
+
+
+    const steps = [
+
+        "Kasus Otentik",
+        "Human First",
+        "AI Second",
+        "H.E.A.R.T.",
+        "Human Final",
+        "Decision Trace"
+
+    ];
+
+
+    const state = {
+
+        scenario: null,
+
+        step: 0,
+
+        initial:
+            "",
+
+        heartIndex:
+            0,
+
+        heart: {
+            H: "",
+            E: "",
+            A: "",
+            R: "",
+            T: ""
+        },
+
+        finalDecision:
+            "",
+
+        finalReason:
+            "",
+
+        scores: {
+            H: 0,
+            E: 0,
+            A: 0,
+            R: 0,
+            T: 0
+        }
+
+    };
+
+
+    /* =========================================================
+       UTILS
+    ========================================================= */
+
+
+    function escapeHtml(text) {
+
+        return String(text)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    function nl2br(text) {
+
+        return escapeHtml(text)
+            .replace(/\n/g, "<br>");
+
+    }
+
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent =
+            message;
+
+        toast.classList.add("show");
+
+        clearTimeout(
+            window.toastTimer
+        );
+
+        window.toastTimer =
+            setTimeout(
+                () => {
+                    toast.classList.remove("show");
+                },
+                2800
+            );
+
+    }
+
+
+    function scrollTopApp() {
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    function scrollToFlow() {
+
+        document
+            .getElementById("flowPreview")
+            .scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+    }
+
+
+    /* =========================================================
+       SCREENS
+    ========================================================= */
+
+
+    function hideAllScreens() {
+
+        document
+            .getElementById("landingScreen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("scenarioScreen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("workspaceScreen")
+            .classList.add("hidden");
+
+    }
+
+
+    function showScenarioScreen() {
+
+        hideAllScreens();
+
+        document
+            .getElementById("scenarioScreen")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("restartTopBtn")
+            .style.display = "none";
+
+        renderScenarioCards();
+
+        scrollTopApp();
+
+    }
+
+
+    function showWorkspace() {
+
+        hideAllScreens();
+
+        document
+            .getElementById("workspaceScreen")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("restartTopBtn")
+            .style.display = "inline-flex";
+
+        renderWorkspace();
+
+        scrollTopApp();
+
+    }
+
+
+    /* =========================================================
+       SCENARIO CARDS
+    ========================================================= */
+
+
+    function renderScenarioCards() {
+
+        const grid =
+            document.getElementById("scenarioGrid");
+
+        grid.innerHTML =
+            scenarios.map(
+                scenario => `
+                    <article class="scenario-card">
+
+                        <div class="scenario-code">
+                            ${scenario.id}
+                        </div>
+
+                        <h3>
+                            ${escapeHtml(scenario.theme)}
+                        </h3>
+
+                        <p>
+                            ${escapeHtml(scenario.title)}
+                        </p>
+
+                        <div class="conflict">
+                            Konflik:
+                            <strong>
+                                ${escapeHtml(scenario.conflict)}
+                            </strong>
+                        </div>
+
+                        <button
+                            class="btn btn-primary"
+                            onclick="selectScenario('${scenario.id}')"
+                        >
+                            Gunakan Kasus Ini
+                        </button>
+
+                    </article>
+                `
+            )
+            .join("");
+
+    }
+
+
+    function selectScenario(id) {
+
+        state.scenario =
+            scenarios.find(
+                scenario =>
+                    scenario.id === id
+            );
+
+        state.step = 0;
+
+        showWorkspace();
+
+    }
+
+
+    /* =========================================================
+       SIDEBAR
+    ========================================================= */
+
+
+    function renderSidebar() {
+
+        document
+            .getElementById("sidebarCase")
+            .innerHTML = `
+                ${escapeHtml(state.scenario.theme)}
+                <br>
+                <span
+                    style="
+                        font-size:11px;
+                        color:var(--muted);
+                        font-weight:600;
+                    "
+                >
+                    ${escapeHtml(state.scenario.id)}
+                </span>
+            `;
+
+
+        const stepList =
+            document.getElementById("stepList");
+
+
+        stepList.innerHTML =
+            steps.map(
+                (step, index) => {
+
+                    let className =
+                        "step-item";
+
+                    if (index === state.step) {
+                        className += " active";
+                    }
+
+                    if (index < state.step) {
+                        className += " done";
+                    }
+
+                    return `
+                        <div class="${className}">
+
+                            <div class="step-num">
+                                ${
+                                    index < state.step
+                                        ? "✓"
+                                        : index + 1
+                                }
+                            </div>
+
+                            <div>
+                                ${step}
+                            </div>
+
+                        </div>
+                    `;
+
+                }
+            )
+            .join("");
+
+    }
+
+
+    /* =========================================================
+       WORKSPACE
+    ========================================================= */
+
+
+    function renderWorkspace() {
+
+        renderSidebar();
+
+        switch (state.step) {
+
+            case 0:
+                renderCaseStep();
+                break;
+
+            case 1:
+                renderHumanFirst();
+                break;
+
+            case 2:
+                renderAISecond();
+                break;
+
+            case 3:
+                renderHeartGate();
+                break;
+
+            case 4:
+                renderHumanFinal();
+                break;
+
+            case 5:
+                renderDecisionTrace();
+                break;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       STEP 0 — CASE
+    ========================================================= */
+
+
+    function renderCaseStep() {
+
+        const card =
+            document.getElementById("mainCard");
+
+        card.innerHTML = `
+
+            <div class="step-kicker">
+                <span class="step-kicker-dot"></span>
+                Kasus Otentik
+            </div>
+
+            <h2>
+                ${escapeHtml(state.scenario.theme)}
+            </h2>
+
+            <p class="lead">
+                Baca situasi berikut dengan teliti.
+                Belum ada jawaban AI pada tahap ini.
+            </p>
+
+
+            <div class="case-box">
+
+                <div class="case-label">
+                    ${escapeHtml(state.scenario.id)}
+                    ·
+                    ${escapeHtml(state.scenario.conflict)}
+                </div>
+
+                <div class="case-text">
+                    ${escapeHtml(state.scenario.case)}
+                </div>
+
+            </div>
+
+
+            <div class="notice">
+
+                <strong>
+                    Human First.
+                </strong>
+
+                <span>
+                    Posisi awal harus ditentukan sebelum
+                    perspektif AI diperlihatkan.
+                </span>
+
+            </div>
+
+
+            <div class="actions-row">
+
+                <button
+                    class="btn btn-outline"
+                    onclick="showScenarioScreen()"
+                >
+                    ← Ganti Kasus
+                </button>
+
+                <div class="right-actions">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="goToStep(1)"
+                    >
+                        Tuliskan Posisi Awal →
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =========================================================
+       STEP 1 — HUMAN FIRST
+    ========================================================= */
+
+
+    function renderHumanFirst() {
+
+        const card =
+            document.getElementById("mainCard");
+
+        card.innerHTML = `
+
+            <div class="step-kicker">
+                <span class="step-kicker-dot"></span>
+                Human First
+            </div>
+
+            <h2>
+                Apa keputusan awalmu?
+            </h2>
+
+            <p class="lead">
+                Nyatakan posisi berdasarkan pemikiranmu sendiri.
+                Perspektif AI belum diperlihatkan pada tahap ini.
+            </p>
+
+
+            <div class="case-box">
+
+                <div class="case-label">
+                    Situasi
+                </div>
+
+                <div class="case-text">
+                    ${escapeHtml(state.scenario.case)}
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Posisi Awal Saya
+                </label>
+
+                <div class="helper">
+                    Jelaskan keputusan yang menurutmu paling tepat
+                    dan alasan awal yang mendasarinya.
+                </div>
+
+                <textarea
+                    id="initialInput"
+                    maxlength="1200"
+                    placeholder="Tuliskan pemikiran awalmu di sini..."
+                    oninput="updateCounter('initialInput','initialCounter')"
+                >${escapeHtml(state.initial)}</textarea>
+
+                <div
+                    class="counter"
+                    id="initialCounter"
+                >
+                    ${state.initial.length}/1200 karakter
+                </div>
+
+            </div>
+
+
+            <div class="actions-row">
+
+                <button
+                    class="btn btn-outline"
+                    onclick="saveInitialAndBack()"
+                >
+                    ← Kembali
+                </button>
+
+                <div class="right-actions">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="saveInitialAndContinue()"
+                    >
+                        Simpan & Lihat Perspektif AI →
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    function updateCounter(
+        inputId,
+        counterId
+    ) {
+
+        const input =
+            document.getElementById(inputId);
+
+        const counter =
+            document.getElementById(counterId);
+
+        if (!input || !counter) {
+            return;
+        }
+
+        counter.textContent =
+            `${input.value.length}/${input.maxLength} karakter`;
+
+    }
+
+
+    function saveInitialAndBack() {
+
+        state.initial =
+            document
+                .getElementById("initialInput")
+                .value.trim();
+
+        goToStep(0);
+
+    }
+
+
+    function saveInitialAndContinue() {
+
+        const value =
+            document
+                .getElementById("initialInput")
+                .value.trim();
+
+        if (value.length < 20) {
+
+            showToast(
+                "Tuliskan posisi awal dengan sedikit lebih lengkap terlebih dahulu."
+            );
+
+            return;
+
+        }
+
+        state.initial =
+            value;
+
+        goToStep(2);
+
+    }
+
+
+    /* =========================================================
+       STEP 2 — AI SECOND
+    ========================================================= */
+
+
+    function renderAISecond() {
+
+        const card =
+            document.getElementById("mainCard");
+
+        card.innerHTML = `
+
+            <div class="step-kicker">
+                <span class="step-kicker-dot"></span>
+                AI Second
+            </div>
+
+            <h2>
+                Perspektif tambahan dari AI
+            </h2>
+
+            <p class="lead">
+                AI tidak menentukan jawaban benar.
+                Gunakan perspektif berikut sebagai bahan pertimbangan
+                sebelum membuat keputusan final.
+            </p>
+
+
+            <div class="case-box">
+
+                <div class="case-label">
+                    Posisi Awalmu
+                </div>
+
+                <div class="case-text">
+                    ${nl2br(state.initial)}
+                </div>
+
+            </div>
+
+
+            <div class="ai-box">
+
+                <div class="ai-header">
+
+                    <div class="ai-icon">
+                        AI
+                    </div>
+
+                    <div>
+
+                        <div class="ai-title">
+                            Perspektif AI
+                        </div>
+
+                        <div class="ai-caption">
+                            Curated perspective · bukan keputusan final
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="ai-text">
+                    ${escapeHtml(state.scenario.ai)}
+                </div>
+
+            </div>
+
+
+            <div class="notice">
+
+                <strong>
+                    Penting:
+                </strong>
+
+                <span>
+                    Kamu tidak wajib mengikuti perspektif AI.
+                    Kamu dapat menerima, menolak, atau
+                    memodifikasinya setelah melalui H.E.A.R.T.
+                </span>
+
+            </div>
+
+
+            <div class="actions-row">
+
+                <button
+                    class="btn btn-outline"
+                    onclick="goToStep(1)"
+                >
+                    ← Posisi Awal
+                </button>
+
+                <div class="right-actions">
+
+                    <button
+                        class="btn btn-teal"
+                        onclick="startHeartGate()"
+                    >
+                        Masuk H.E.A.R.T. Gate →
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =========================================================
+       STEP 3 — HEART
+    ========================================================= */
+
+
+    function startHeartGate() {
+
+        state.heartIndex = 0;
+
+        goToStep(3);
+
+    }
+
+
+    function renderHeartGate() {
+
+        const current =
+            heartData[state.heartIndex];
+
+        const card =
+            document.getElementById("mainCard");
+
+
+        const chips =
+            heartData.map(
+                (item, index) => {
+
+                    let className =
+                        "heart-chip";
+
+                    if (index === state.heartIndex) {
+                        className += " active";
+                    }
+
+                    if (
+                        state.heart[item.key] &&
+                        index !== state.heartIndex
+                    ) {
+                        className += " done";
+                    }
+
+                    return `
+                        <div class="${className}">
+                            ${item.key}
+                        </div>
+                    `;
+
+                }
+            )
+            .join("");
+
+
+        card.innerHTML = `
+
+            <div class="step-kicker">
+                <span class="step-kicker-dot"></span>
+                H.E.A.R.T. Gate
+            </div>
+
+            <h2>
+                Refleksi sebelum keputusan
+            </h2>
+
+            <p class="lead">
+                Selesaikan lima gerbang refleksi.
+                Kamu belum dapat menuju keputusan final
+                sebelum seluruh dimensi selesai.
+            </p>
+
+
+            <div class="heart-intro">
+                ${chips}
+            </div>
+
+
+            <div class="heart-panel">
+
+                <div class="heart-letter">
+                    ${current.key}
+                </div>
+
+                <h3>
+                    ${current.name}
+                </h3>
+
+                <div class="helper">
+                    ${current.helper}
+                </div>
+
+                <div class="heart-question">
+                    ${current.question}
+                </div>
+
+                <div class="field">
+
+                    <textarea
+                        id="heartInput"
+                        maxlength="1200"
+                        placeholder="Tuliskan refleksimu..."
+                        oninput="updateCounter('heartInput','heartCounter')"
+                    >${escapeHtml(state.heart[current.key])}</textarea>
+
+                    <div
+                        class="counter"
+                        id="heartCounter"
+                    >
+                        ${
+                            state
+                                .heart[current.key]
+                                .length
+                        }/1200 karakter
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions-row">
+
+                <button
+                    class="btn btn-outline"
+                    onclick="heartPrevious()"
+                >
+                    ${
+                        state.heartIndex === 0
+                            ? "← AI Second"
+                            : "← Sebelumnya"
+                    }
+                </button>
+
+                <div class="right-actions">
+
+                    <button
+                        class="btn btn-teal"
+                        onclick="heartNext()"
+                    >
+                        ${
+                            state.heartIndex ===
+                            heartData.length - 1
+                                ? "Selesaikan H.E.A.R.T. →"
+                                : "Berikutnya →"
+                        }
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    function saveCurrentHeart() {
+
+        const input =
+            document.getElementById("heartInput");
+
+        if (!input) {
+            return "";
+        }
+
+        const value =
+            input.value.trim();
+
+        const key =
+            heartData[state.heartIndex].key;
+
+        state.heart[key] =
+            value;
+
+        return value;
+
+    }
+
+
+    function heartPrevious() {
+
+        saveCurrentHeart();
+
+        if (state.heartIndex === 0) {
+
+            goToStep(2);
+
+            return;
+        }
+
+        state.heartIndex--;
+
+        renderWorkspace();
+
+        scrollTopApp();
+
+    }
+
+
+    function heartNext() {
+
+        const value =
+            saveCurrentHeart();
+
+        if (value.length < 20) {
+
+            showToast(
+                "Refleksi masih terlalu singkat. Jelaskan alasanmu sedikit lebih lengkap."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            state.heartIndex <
+            heartData.length - 1
+        ) {
+
+            state.heartIndex++;
+
+            renderWorkspace();
+
+            scrollTopApp();
+
+            return;
+        }
+
+
+        const incomplete =
+            heartData.some(
+                item =>
+                    state.heart[item.key]
+                        .trim()
+                        .length < 20
+            );
+
+
+        if (incomplete) {
+
+            showToast(
+                "Semua dimensi H.E.A.R.T. harus diselesaikan."
+            );
+
+            return;
+
+        }
+
+
+        calculateScores();
+
+        goToStep(4);
+
+    }
+
+
+    /* =========================================================
+       PROTOTYPE SCORING
+       NOT PSYCHOMETRIC
+    ========================================================= */
+
+
+    function calculateScores() {
+
+        state.scores.H =
+            scoreHonesty(
+                state.heart.H
+            );
+
+        state.scores.E =
+            scoreEmpathy(
+                state.heart.E
+            );
+
+        state.scores.A =
+            scoreArgumentation(
+                state.heart.A
+            );
+
+        state.scores.R =
+            scoreResponsibility(
+                state.heart.R
+            );
+
+        state.scores.T =
+            scoreThoughtReflection(
+                state.heart.T
+            );
+
+    }
+
+
+    function baseLengthScore(text) {
+
+        const length =
+            text.trim().length;
+
+        if (length < 20) return 0;
+        if (length < 50) return 1;
+        if (length < 100) return 2;
+        if (length < 180) return 3;
+
+        return 4;
+
+    }
+
+
+    function containsAny(
+        text,
+        words
+    ) {
+
+        const lower =
+            text.toLowerCase();
+
+        return words.some(
+            word =>
+                lower.includes(word)
+        );
+
+    }
+
+
+    function scoreHonesty(text) {
+
+        let score =
+            baseLengthScore(text);
+
+        if (
+            containsAny(
+                text,
+                [
+                    "ai",
+                    "saran",
+                    "perspektif",
+                    "bantuan",
+                    "mengubah",
+                    "mempengaruhi",
+                    "menolak",
+                    "menerima"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 3);
+        }
+
+        return Math.min(
+            score,
+            4
+        );
+
+    }
+
+
+    function scoreEmpathy(text) {
+
+        let score =
+            baseLengthScore(text);
+
+        if (
+            containsAny(
+                text,
+                [
+                    "pihak",
+                    "teman",
+                    "anggota",
+                    "kelompok",
+                    "siswa",
+                    "guru",
+                    "sekolah",
+                    "orang lain",
+                    "korban",
+                    "peserta"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 2);
+        }
+
+        if (
+            containsAny(
+                text,
+                [
+                    "sementara",
+                    "sedangkan",
+                    "di sisi lain",
+                    "berbeda",
+                    "perspektif",
+                    "kepentingan"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 3);
+        }
+
+        return Math.min(
+            score,
+            4
+        );
+
+    }
+
+
+    function scoreArgumentation(text) {
+
+        let score =
+            baseLengthScore(text);
+
+        if (
+            containsAny(
+                text,
+                [
+                    "karena",
+                    "sebab",
+                    "alasan",
+                    "menurut",
+                    "lebih tepat"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 2);
+        }
+
+        if (
+            containsAny(
+                text,
+                [
+                    "alternatif",
+                    "dibanding",
+                    "namun",
+                    "tetapi",
+                    "menolak",
+                    "menerima"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 3);
+        }
+
+        return Math.min(
+            score,
+            4
+        );
+
+    }
+
+
+    function scoreResponsibility(text) {
+
+        let score =
+            baseLengthScore(text);
+
+        if (
+            containsAny(
+                text,
+                [
+                    "dampak",
+                    "konsekuensi",
+                    "akibat",
+                    "risiko"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 2);
+        }
+
+        if (
+            containsAny(
+                text,
+                [
+                    "jangka pendek",
+                    "jangka panjang",
+                    "ke depan",
+                    "nantinya"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 4);
+        }
+
+        return Math.min(
+            score,
+            4
+        );
+
+    }
+
+
+    function scoreThoughtReflection(text) {
+
+        let score =
+            baseLengthScore(text);
+
+        if (
+            containsAny(
+                text,
+                [
+                    "awal",
+                    "sebelum",
+                    "setelah",
+                    "berubah",
+                    "tidak berubah",
+                    "sekarang"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 2);
+        }
+
+        if (
+            containsAny(
+                text,
+                [
+                    "karena",
+                    "menyadari",
+                    "mempertimbangkan",
+                    "setelah melihat"
+                ]
+            )
+        ) {
+            score =
+                Math.max(score, 3);
+        }
+
+        return Math.min(
+            score,
+            4
+        );
+
+    }
+
+
+    /* =========================================================
+       STEP 4 — HUMAN FINAL
+    ========================================================= */
+
+
+    function renderHumanFinal() {
+
+        const card =
+            document.getElementById("mainCard");
+
+
+        card.innerHTML = `
+
+            <div class="step-kicker">
+                <span class="step-kicker-dot"></span>
+                Human Final
+            </div>
+
+            <h2>
+                Keputusan tetap berada pada manusia
+            </h2>
+
+            <p class="lead">
+                Setelah melihat perspektif AI dan melewati
+                H.E.A.R.T., tetapkan keputusan akhirnya.
+            </p>
+
+
+            <div class="case-box">
+
+                <div class="case-label">
+                    Posisi Awal
+                </div>
+
+                <div class="case-text">
+                    ${nl2br(state.initial)}
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Keputusan Akhir Saya
+                </label>
+
+                <div class="helper">
+                    Nyatakan keputusan secara jelas.
+                </div>
+
+                <textarea
+                    id="finalDecisionInput"
+                    maxlength="1200"
+                    placeholder="Apa keputusan akhir yang kamu pilih?"
+                >${escapeHtml(state.finalDecision)}</textarea>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Alasan Perubahan atau Penguatan Keputusan
+                </label>
+
+                <div class="helper">
+                    Bandingkan dengan posisi awal.
+                    Jelaskan mengapa keputusanmu berubah atau tetap.
+                </div>
+
+                <textarea
+                    id="finalReasonInput"
+                    maxlength="1200"
+                    placeholder="Jelaskan perjalanan keputusanmu..."
+                >${escapeHtml(state.finalReason)}</textarea>
+
+            </div>
+
+
+            <div class="actions-row">
+
+                <button
+                    class="btn btn-outline"
+                    onclick="returnToHeart()"
+                >
+                    ← H.E.A.R.T.
+                </button>
+
+                <div class="right-actions">
+
+                    <button
+                        class="btn btn-dark"
+                        onclick="finishReflection()"
+                    >
+                        Buat Decision Trace →
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    function returnToHeart() {
+
+        state.finalDecision =
+            document
+                .getElementById(
+                    "finalDecisionInput"
+                )
+                .value.trim();
+
+        state.finalReason =
+            document
+                .getElementById(
+                    "finalReasonInput"
+                )
+                .value.trim();
+
+        state.heartIndex =
+            heartData.length - 1;
+
+        goToStep(3);
+
+    }
+
+
+    function finishReflection() {
+
+        const decision =
+            document
+                .getElementById(
+                    "finalDecisionInput"
+                )
+                .value.trim();
+
+        const reason =
+            document
+                .getElementById(
+                    "finalReasonInput"
+                )
+                .value.trim();
+
+
+        if (
+            decision.length < 20 ||
+            reason.length < 20
+        ) {
+
+            showToast(
+                "Keputusan akhir dan alasannya perlu dijelaskan sedikit lebih lengkap."
+            );
+
+            return;
+        }
+
+
+        state.finalDecision =
+            decision;
+
+        state.finalReason =
+            reason;
+
+
+        calculateScores();
+
+        saveTraceToLocalStorage();
+
+        goToStep(5);
+
+    }
+
+
+    /* =========================================================
+       STEP 5 — TRACE
+    ========================================================= */
+
+
+    function getIJK() {
+
+        const sum =
+            Object
+                .values(state.scores)
+                .reduce(
+                    (total, score) =>
+                        total + score,
+                    0
+                );
+
+        return Math.round(
+            (sum / 20) * 100
+        );
+
+    }
+
+
+    function getIJKCategory(score) {
+
+        if (score <= 39) {
+            return "Jejak Belum Lengkap";
+        }
+
+        if (score <= 59) {
+            return "Refleksi Awal";
+        }
+
+        if (score <= 79) {
+            return "Refleksi Berkembang";
+        }
+
+        return "Refleksi Mendalam";
+
+    }
+
+
+    function renderDecisionTrace() {
+
+        const card =
+            document.getElementById("mainCard");
+
+        const ijk =
+            getIJK();
+
+        const category =
+            getIJKCategory(ijk);
+
+
+        card.innerHTML = `
+
+            <div class="result-header">
+
+                <div>
+
+                    <div class="success-badge">
+                        ✓ Decision Trace selesai
+                    </div>
+
+                    <h2>
+                        Jejak Keputusan
+                    </h2>
+
+                    <p class="lead">
+                        Hasil berikut menunjukkan perjalanan
+                        keputusan dari posisi awal hingga keputusan
+                        akhir setelah refleksi.
+                    </p>
+
+                </div>
+
+
+                <div class="ijk-box">
+
+                    <div class="ijk-small">
+                        Indeks Jejak Keputusan
+                    </div>
+
+                    <div class="ijk-number">
+                        ${ijk}
+                    </div>
+
+                    <div class="ijk-category">
+                        ${category}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="score-grid">
+
+                ${renderScoreCard("H")}
+                ${renderScoreCard("E")}
+                ${renderScoreCard("A")}
+                ${renderScoreCard("R")}
+                ${renderScoreCard("T")}
+
+            </div>
+
+
+            <div class="trace">
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        Kasus
+                    </div>
+
+                    <div class="trace-value">
+                        ${escapeHtml(state.scenario.case)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        Human First · Posisi Awal
+                    </div>
+
+                    <div class="trace-value">
+                        ${nl2br(state.initial)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        AI Second · Perspektif AI
+                    </div>
+
+                    <div class="trace-value">
+                        ${escapeHtml(state.scenario.ai)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        Honesty
+                    </div>
+
+                    <div class="trace-value">
+                        ${nl2br(state.heart.H)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        Empathy
+                    </div>
+
+                    <div class="trace-value">
+                        ${nl2br(state.heart.E)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        Argumentation
+                    </div>
+
+                    <div class="trace-value">
+                        ${nl2br(state.heart.A)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        Responsibility
+                    </div>
+
+                    <div class="trace-value">
+                        ${nl2br(state.heart.R)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        Thought Reflection
+                    </div>
+
+                    <div class="trace-value">
+                        ${nl2br(state.heart.T)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item final">
+
+                    <div class="trace-label">
+                        Human Final · Keputusan Akhir
+                    </div>
+
+                    <div class="trace-value">
+                        ${nl2br(state.finalDecision)}
+                    </div>
+
+                </div>
+
+
+                <div class="trace-item">
+
+                    <div class="trace-label">
+                        Perubahan / Penguatan Keputusan
+                    </div>
+
+                    <div class="trace-value">
+                        ${nl2br(state.finalReason)}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="disclaimer">
+
+                <strong>
+                    Catatan prototipe:
+                </strong>
+
+                skor H.E.A.R.T. dan IJK pada MVP ini digunakan
+                sebagai analisis deskriptif kelengkapan refleksi,
+                bukan penilaian kepribadian, diagnosis karakter,
+                peringkat moral, atau dasar hukuman.
+
+            </div>
+
+
+            <div class="actions-row print-hide">
+
+                <button
+                    class="btn btn-outline"
+                    onclick="goToStep(4)"
+                >
+                    ← Perbaiki Keputusan
+                </button>
+
+                <div class="right-actions">
+
+                    <button
+                        class="btn btn-outline"
+                        onclick="window.print()"
+                    >
+                        Cetak / Simpan PDF
+                    </button>
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="restartApp()"
+                    >
+                        Coba Kasus Lain
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    function renderScoreCard(letter) {
+
+        return `
+
+            <div class="score-card">
+
+                <div class="score-letter">
+                    ${letter}
+                </div>
+
+                <div class="score-value">
+                    ${state.scores[letter]}
+                </div>
+
+                <div class="score-max">
+                    /4
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =========================================================
+       NAVIGATION
+    ========================================================= */
+
+
+    function goToStep(step) {
+
+        state.step =
+            step;
+
+        renderWorkspace();
+
+        scrollTopApp();
+
+    }
+
+
+    /* =========================================================
+       LOCAL STORAGE
+    ========================================================= */
+
+
+    function saveTraceToLocalStorage() {
+
+        const record = {
+
+            date:
+                new Date()
+                    .toISOString(),
+
+            scenario:
+                state.scenario.id,
+
+            theme:
+                state.scenario.theme,
+
+            initial:
+                state.initial,
+
+            heart:
+                {...state.heart},
+
+            finalDecision:
+                state.finalDecision,
+
+            finalReason:
+                state.finalReason,
+
+            scores:
+                {...state.scores},
+
+            ijk:
+                getIJK()
+
+        };
+
+
+        let history =
+            [];
+
+        try {
+
+            history =
+                JSON.parse(
+                    localStorage.getItem(
+                        "characterCaptchaHistory"
+                    )
+                ) || [];
+
+        } catch (error) {
+
+            history =
+                [];
+
+        }
+
+
+        history.unshift(
+            record
+        );
+
+
+        history =
+            history.slice(
+                0,
+                20
+            );
+
+
+        localStorage.setItem(
+            "characterCaptchaHistory",
+            JSON.stringify(history)
+        );
+
+    }
+
+
+    /* =========================================================
+       RESTART
+    ========================================================= */
+
+
+    function openRestartModal() {
+
+        document
+            .getElementById("restartModal")
+            .classList.remove("hidden");
+
+    }
+
+
+    function closeRestartModal() {
+
+        document
+            .getElementById("restartModal")
+            .classList.add("hidden");
+
+    }
+
+
+    function restartApp() {
+
+        closeRestartModal();
+
+
+        state.scenario =
+            null;
+
+        state.step =
+            0;
+
+        state.initial =
+            "";
+
+        state.heartIndex =
+            0;
+
+        state.heart = {
+            H: "",
+            E: "",
+            A: "",
+            R: "",
+            T: ""
+        };
+
+        state.finalDecision =
+            "";
+
+        state.finalReason =
+            "";
+
+        state.scores = {
+            H: 0,
+            E: 0,
+            A: 0,
+            R: 0,
+            T: 0
+        };
+
+
+        showScenarioScreen();
+
+    }
+
+
+    /* =========================================================
+       INIT
+    ========================================================= */
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            renderScenarioCards();
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
